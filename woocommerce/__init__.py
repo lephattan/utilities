@@ -2,6 +2,21 @@ class UnsupportedBulkEditAction(Exception):
     pass
 
 
+def bulk_edit(product_json: dict, edits: list) -> dict:
+    """
+    TODO: docs string
+    """
+    for edit in edits:
+        if edit['target'] == 'variation':
+            product_json = bulk_edit_variation(
+                product_json, edit['field'], edit['action'], edit['value'])
+        elif edit['target'] == 'product':
+            product_json = bulk_edit_product(
+                product_json, edit['field'], edit['action'], edit['value'])
+
+    return product_json
+
+
 def bulk_edit_variation(product_json: dict, field: str, action: str, value: str or int or float) -> dict:
     """
     Modifies woocommerce product_json variations field with provied action and value
@@ -34,4 +49,7 @@ def bulk_edit_variation(product_json: dict, field: str, action: str, value: str 
                     variation[field] = str(
                         variation[field]).replace(str(value), '')
 
+    return product_json
+
+def bulk_edit_product(product_json: dict, field: str, action: str, value: str or int or float) -> dict:
     return product_json
